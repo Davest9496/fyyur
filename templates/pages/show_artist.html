@@ -72,6 +72,10 @@
 	</div>
 </section>
 
+{% if artist.id %}
+<a href="/artists/{{ artist.id }}/availability"><button class="btn btn-default btn-lg">Manage Availability</button></a>
+{% endif %}
+
 <a href="/artists/{{ artist.id }}/edit"><button class="btn btn-primary btn-lg">Edit</button></a>
 
 {% endblock %}

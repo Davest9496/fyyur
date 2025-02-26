@@ -1,0 +1,61 @@
+{% extends 'layouts/main.html' %}
+{% block title %}{{ artist.name }} | Availability{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-sm-12">
+    <h1 class="monospace">{{ artist.name }} - Availability</h1>
+    <p>Set your available time slots for venues to book shows with you.</p>
+    
+    <!-- Current Availability -->
+    <h3>Current Availability</h3>
+    {% for day, slots in availability_by_day.items() %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">{{ day }}</h4>
+      </div>
+      <div class="panel-body">
+        {% if slots %}
+        <ul class="list-group">
+          {% for slot in slots %}
+          <li class="list-group-item">
+            {{ slot.start_time.strftime('%I:%M %p') }} - {{ slot.end_time.strftime('%I:%M %p') }}
+            <form style="display:inline" method="post" action="/artists/{{ artist.id }}/availability/{{ slot.id }}/delete">
+              <button type="submit" class="btn btn-sm btn-danger pull-right">Delete</button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No availability set for this day.</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+    
+    <!-- Add New Availability -->
+    <h3>Add New Availability</h3>
+    <form method="post" action="/artists/{{ artist.id }}/availability/create">
+      <div class="form-group">
+        <label for="day_of_week">Day of Week</label>
+        {{ form.day_of_week(class_='form-control') }}
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="start_time">Start Time (HH:MM, 24-hour)</label>
+          {{ form.start_time(class_='form-control', placeholder='e.g. 14:30') }}
+        </div>
+        <div class="form-group col-md-6">
+          <label for="end_time">End Time (HH:MM, 24-hour)</label>
+          {{ form.end_time(class_='form-control', placeholder='e.g. 17:00') }}
+        </div>
+      </div>
+      {{ form.artist_id() }}
+      <button type="submit" class="btn btn-primary">Add Availability</button>
+    </form>
+    
+    <div class="mt-4">
+      <a href="{{ url_for('show_artist', artist_id=artist.id) }}" class="btn btn-default">Back to Artist</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
