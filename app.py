@@ -58,6 +58,9 @@ def format_datetime(value, fmt='medium'):
         fmt = "EE MM, dd, y h:mma"
     return babel.dates.format_datetime(date, fmt, locale='en')
 
+
+app.jinja_env.filters['datetime'] = format_datetime
+
 # ----------------------------------------------------------------------------#
 # Controllers.
 # ----------------------------------------------------------------------------#
@@ -204,7 +207,7 @@ def show_venue(venue_id):
         "city": venue.city,
         "state": venue.state,
         "phone": venue.phone,
-        "website": venue.website,
+        "website": venue.website_link,
         "facebook_link": venue.facebook_link,
         "seeking_talent": venue.seeking_talent,
         "seeking_description": venue.seeking_description,
@@ -262,7 +265,7 @@ def create_venue_submission():
             genres=form.genres.data,
             facebook_link=form.facebook_link.data,
             image_link=form.image_link.data,
-            website=form.website_link.data,
+            website_link=form.website_link.data,
             seeking_talent=form.seeking_talent.data,
             seeking_description=form.seeking_description.data
         )
@@ -323,6 +326,7 @@ def delete_venue(venue_id):
 #  ----------------------------------------------------------------
 
 
+@app.route('/artists')
 def artists():
     """
     Retrieve and format a list of all artists.
@@ -381,6 +385,7 @@ def search_artists():
     return render_template('pages/search_artists.html', results=response, search_term=search_term)
 
 
+@app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
     """
     Display detailed information about a specific artist.
@@ -432,7 +437,7 @@ def show_artist(artist_id):
         "city": artist.city,
         "state": artist.state,
         "phone": artist.phone,
-        "website": artist.website,
+        "website": artist.website_link,
         "facebook_link": artist.facebook_link,
         "seeking_venue": artist.seeking_venue,
         "seeking_description": artist.seeking_description,
@@ -503,7 +508,7 @@ def edit_artist_submission(artist_id):
         artist.genres = form.genres.data
         artist.facebook_link = form.facebook_link.data
         artist.image_link = form.image_link.data
-        artist.website = form.website_link.data
+        artist.website_link = form.website_link.data
         artist.seeking_venue = form.seeking_venue.data
         artist.seeking_description = form.seeking_description.data
 
@@ -547,7 +552,7 @@ def edit_venue(venue_id):
     form.genres.data = venue.genres
     form.facebook_link.data = venue.facebook_link
     form.image_link.data = venue.image_link
-    form.website_link.data = venue.website
+    form.website_link.data = venue.website_link
     form.seeking_talent.data = venue.seeking_talent
     form.seeking_description.data = venue.seeking_description
 
@@ -583,7 +588,7 @@ def edit_venue_submission(venue_id):
         venue.genres = form.genres.data
         venue.facebook_link = form.facebook_link.data
         venue.image_link = form.image_link.data
-        venue.website = form.website_link.data
+        venue.website_link = form.website_link.data
         venue.seeking_talent = form.seeking_talent.data
         venue.seeking_description = form.seeking_description.data
 
@@ -642,7 +647,7 @@ def create_artist_submission():
             genres=form.genres.data,
             facebook_link=form.facebook_link.data,
             image_link=form.image_link.data,
-            website=form.website_link.data,
+            website_link=form.website_link.data,
             seeking_venue=form.seeking_venue.data,
             seeking_description=form.seeking_description.data
         )
@@ -694,6 +699,7 @@ def shows():
     return render_template('pages/shows.html', shows=data)
 
 
+@app.route('/shows/create', methods=['GET'])
 def create_shows():
     """
     Renders the form for creating a new show.
